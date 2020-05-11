@@ -285,6 +285,48 @@ class AdminController extends Controller
 
     }
 
+    //清除无用图片
+    public function clear(){
+
+        $arr = [];
+
+        function myreaddir($dir) {
+            $handle=opendir($dir);
+            $i=0;
+            while(!!$file = readdir($handle)) {
+                if (($file!=".")and($file!="..")) {
+                    $list[$i]=$file;
+                    $i=$i+1;
+                }
+            }
+            closedir($handle);
+            return $list;
+        }
+        $facearray = myreaddir("./uploads");
+        
+        $res = DB::select("select pic from article");
+        
+        foreach($res as $v){
+            $arr[] = $v->pic;
+        }
+        
+        for($i = 0;$i < count($arr);$i++){
+            $arr[$i] = substr($arr[$i],8);
+           
+        }
+        for($t = 0;$t < count($facearray);$t++){
+          
+            if(in_array($facearray[$t],$arr) || $facearray[$t] == "ueditor"){
+            
+            }else{
+                unlink("./uploads/".$facearray[$t]);
+                
+            }
+        }
+        return redirect("/adminindex");
+
+    }
+
     //退出登录
     public function out(){
         if(session('user')){

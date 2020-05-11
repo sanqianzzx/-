@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
 
 Route::get('/', "IndexController@home");
@@ -69,6 +70,8 @@ Route::group(['middleware' => ['admin']], function () {
     Route::post('/upload',"AdminController@upload");
     Route::get('/articleupdate/{id}',"AdminController@articleupdate");
     Route::post('/articleupdo',"AdminController@articleupdo");
+
+    Route::get('/clear',"AdminController@clear");
 });
 //管理员列表
 Route::get('/adminlist',"AdminController@adminlist")->middleware('root');

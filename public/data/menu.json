@@ -27,6 +27,9 @@
     }, {
         "name": "文章管理",
         "url": "/articleindex"
+    }, {
+        "name": "清除无用图片",
+        "url": "/clear"
     }]
 }, {
     "name": "管理员",
