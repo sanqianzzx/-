@@ -69,7 +69,7 @@
                     
                     <th>时间</th>
 
-                    <th>是否阅读</th>
+                    <th>是否回复</th>
 
                     <th>操作</th>
                 </tr>
@@ -84,7 +84,7 @@
                     <td>{{ $v->user }}</td>
 
                     <td>{{ date("Y-m-d H:i:s",$v->time) }}</td>
-                    <td >未阅读</td>
+                    <td >未回复</td>
                     <td><a href="/fkdetails/{{ $v->id }}">查看</a></td>
                 </tr>
                 @else
@@ -94,7 +94,7 @@
                     <td>{{ $v->user }}</td>
 
                     <td>{{ date("Y-m-d H:i:s",$v->time) }}</td>
-                    <td>已阅读</td>
+                    <td>已回复</td>
                     <td><a href="/fkdetails/{{ $v->id }}">查看</a></td>
                 </tr>
                 @endif

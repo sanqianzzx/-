@@ -59,5 +59,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin' => \App\Http\Middleware\Admin::class,
         'root' => \App\Http\Middleware\Root::class,
+        'my' => \App\Http\Middleware\My::class,
+        //网站关闭功能 未实装
+        'statues' => \App\Http\Middleware\Statues::class,
     ];
 }

@@ -15,24 +15,49 @@
     <!-- Your custom styles (optional) -->
     <link href="/css/style.min.css" rel="stylesheet">
     <style>
-        #Dtype{
-            
-            margin-top: 20px;
-            height: 30px;
-            line-height: 30px; 
-            position: relative;
-            
-        }
         
-        #type{
-            margin-top: 20px;
-            width: 100px;
+        #left{
+            background: white;
+            min-height: 60%;
+            width: 20%;
+            border: solid 1px #ddd;;
             float: left;
         }
-        #list{
+        #right{
+            background: white;
+            margin-left: 5%;
+            min-height: 80%;
+            width: 75%;
+            border: 1px solid #ddd; 
+            float: left;
+            position: relative;
+        }
+        .left_li{
+            color: black;
+            /* cursor: pointer; */
+            width: 100%;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .left_li_d{
+            /* cursor: pointer; */
+            color: #23b8ff;
+            /* background: #e5e5e5; */
+            width: 100%;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+            font-size: 18px;
+        }
+        button{
             float: right;
-            margin-right: 0px;
-            line-height: 38px;
+            position: absolute;
+            top: 1px;
+        }
+        .h{
+            font-size: 32px;
         }
     </style>
 </head>
@@ -41,7 +66,7 @@
 
     <!--Main Navigation-->
     <header>
-
+    <div id="bg"></div>
         <!-- Navbar -->
         <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
             <div class="container">
@@ -90,7 +115,7 @@
                     @else
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
-                        <a class="nav-link waves-effect" href="/myindex" >{{ session()->get('username') }}</a>
+                        <a class="nav-link waves-effect" href="#" >{{ session()->get('username') }}</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link waves-effect" href="/uset" >登出</a>
@@ -107,98 +132,44 @@
     <!--Main Navigation-->
 
     <!--Main layout-->
-    <main class="mt-5 pt-5">
+    <main class="mt-5 pt-5" style="height:100%">
     
-        <div class="container" >
-
-            <!--Section: Jumbotron-->
-            <section class="card blue-gradient wow fadeIn" id="intro">
-
-                <!-- Content -->
-                <div class="card-body text-white text-center py-5 px-5 my-5">
-
-                    <h1 class="mb-4">
-                        <strong>欢迎来到 时迁</strong>
-                    </h1>
-                    <p>
-                        <strong>但愿日子清静抬头遇见的满是柔情</strong>
-                    </p>
-                    <!-- <p class="mb-4">
-                        <strong>我会在这里发布一些有趣的文章</strong>
-                    </p> -->
-                    
-
-                </div>
-                <!-- Content -->
-            </section>
-            <!--Section: Jumbotron-->
-            <div style="overflow:hidden">
-                <select class="form-control" id="type">
-                    <option class="t" value="0"> 全部 </option>
-                @foreach($type as $k=>$v)
-                    @if($newtype == $v->id)
-                    <option class="t" value=" {{ $v->id }} " selected>{{ $v->tname }}</option>
-                    @else
-                    <option class="t" value=" {{ $v->id }} " >{{ $v->tname }}</option>
-                    @endif
-                @endforeach
-                </select>
-
-                
+        <div class="container" style="height:100%">
+        
+            <div id="left">
+                <ul class="list-unstyled">
+                    <a href="/myindex"><li class="left_li">更改密码</li></a>
+                    <a href="/mygood"><li class="left_li">我的收藏</li></a>
+                    <a href="/myhistory"><li class="left_li_d">浏览历史</li></a>
+                    <a href="/mymessage"><li class="left_li">站内信</li></a>
+                </ul>
+            </div>
+            <div id="right">
+                <span class="h">浏览历史 :</span>
+                <button class="btn btn-primary">删除记录</button>
+                <table class="table table-hover">
+                    <tr>
+                        <th>文章标题</th>
+                        <th>操作</th>
+                    </tr>
+                    @foreach($res as $k=>$v)
+                    <tr class="content">
+                        <td>
+                            @foreach($article as $vv)
+                            @if($v->harticle == $vv->harticle)
+                                {{ $vv->aname }}
+                            @endif
+                            @endforeach
+                        </td>
+                        <td><a href="/article/{{$v->harticle}}">查看</a></td>
+                    </tr>
+                    @endforeach
+                </table>
+                <div id="page">{{$res->render()}}</div>
             </div>
 
-            <!--Section: Cards-->
-            <section class="pt-5">
-                
-                <!-- Heading & Description -->
-                
-                <!-- Heading & Description -->
-
-            @foreach($text as $ii)    
-                <!--Grid row-->
-                <div class="row wow fadeIn">
-
-                    <!--Grid column-->
-                    <div class="col-lg-5 col-xl-4 mb-4">
-                        <!--Featured image-->
-                        <div class="view overlay rounded z-depth-1">
-                            <img src="/{{ $ii->pic }}" width="350px" height="183px">
-                            <a href="/article/{{ $ii->id }}" >
-                                <div class="mask rgba-white-slight"></div>
-                            </a>
-                        </div>
-                    </div>
-                    <!--Grid column-->
-
-                    <!--Grid column-->
-
-                
-                    <div class="col-lg-7 col-xl-7 ml-xl-4 mb-4">
-                        <h3 class="mb-3 font-weight-bold dark-grey-text">
-                            <strong> {{ $ii->aname }} </strong>
-                        </h3>
-                        <p class="type">{{ $ii->type }}</p>
-                        <p class="grey-text"> {{ $ii->content }} </p>
-                        <a href="/article/{{ $ii->id }}" class="btn btn-primary btn-md" >查看详情
-                            <i class="fas fa-play ml-2"></i>
-                        </a>
-                        
-                    </div>
-                    <!--Grid column-->
-                
-                </div>
-                <!--Grid row-->
-
-                <hr class="mb-5">
-            @endforeach
-
-                
-
-                
-
-            </section>
-            <!--Section: Cards-->
-
+          
+            
         </div>
     </main>
     <!--Main layout-->
@@ -238,13 +209,32 @@
 </html>
 
 <script>
-    $("#type").change(function(){
-        // alert($(this).val());
-        var id = $(this).val(); 
 
-        location.href = "/?id="+id+"";
+    $(".left_li").mouseover(function(){
+      
+        // alert($(this).text());
+        $(this).css({"background": "#e5e5e5"});
+    })
+    $(".left_li").mouseout(function(){
+        // alert(1);
+        $(this).css({"background": "white"});
+        $(this).removeAttr("style");
+    })
+    $(".left_li_d").mouseover(function(){
+      
+        // alert($(this).text());
+        $(this).css({"background": "#e5e5e5"});
+    })
+    $(".left_li_d").mouseout(function(){
+        // alert(1);
+        $(this).css({"background": "white"});
+        $(this).removeAttr("style");
     })
 
+    $("button").click(function(){
+        $.post("/remove_h",{'_token':'{{csrf_token()}}'},function(data){
 
-    
+        })
+        $(".content").remove();
+    })
 </script>

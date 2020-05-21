@@ -109,7 +109,7 @@
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">内容</label>
-                    <div class="layui-input-block" style="width:810px;">
+                    <div class="layui-input-block" style="width:1110px;">
                         <script id="container" name="body" style="height: 500px" type="text/plain"></script>
                         </div>
                         </div>

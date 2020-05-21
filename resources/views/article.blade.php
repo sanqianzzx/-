@@ -27,6 +27,7 @@
             min-height: 500px;
             z-index: 1;
             background: white;
+            position: relative;
         }
         
         .review{
@@ -88,6 +89,26 @@
             position: fixed;
             overflow: hidden;
             z-index: -1;
+        }
+        .good{
+            background: url('/img/good.png') no-repeat;
+            width: 30px;
+            height: 30px;
+            background-size: cover;
+            overflow: hidden;
+            position: absolute;
+            bottom: 10px;
+            left: 48%;
+        }
+        .good2{
+            background: url('/img/good2.png') no-repeat;
+            width: 30px;
+            height: 30px;
+            background-size: cover;
+            overflow: hidden;
+            position: absolute;
+            bottom: 10px;
+            left: 48%;
         }
         .oli{
             width: 100%;
@@ -205,7 +226,7 @@
                     @else
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
-                        <a class="nav-link waves-effect" href="#" >{{ session()->get('username') }}</a>
+                        <a class="nav-link waves-effect" href="/myindex" >{{ session()->get('username') }}</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link waves-effect" href="/uset" >登出</a>
@@ -231,6 +252,13 @@
             <div id="time"><small class="text-muted" >{{ $res[0]->time }}</small></div>
             
             <div id="scontent">{!! $res[0]->content !!}</div>
+            <div style="height:40px;"></div>
+
+            @if(empty($good))
+            <div id="good" class="good"></div>
+            @else
+            <div id="good" class="good2"></div>
+            @endif
         </div>
         <div style="clear: both"></div>
 
@@ -248,7 +276,7 @@
 
         <div id="editor">
             <textarea id="text" placeholder="写点什么...."></textarea>
-            <div class="text-danger"></div>
+            <a href="/login"><div class="text-info"></div></a>
             <button class="btn btn-info" id="pl">提交</button>
         </div>
         <div class="review">
@@ -330,7 +358,7 @@
 
     $("#text").focus(function(){
         if(a == "请先登录"){
-            $(".text-danger").html('请先登录');
+            $(".text-info").html('请先登录');
             flag1 = false;
         }else{
             flag1 = true;
@@ -346,6 +374,25 @@
             flag2 = true;
         }
     })
+
+    $("#good").click(function(){
+        if(a == "请先登录"){
+            alert(a);
+        }else{
+            $.post('/good',{'_token':'{{csrf_token()}}'},function(data){
+                
+            })
+
+            if($(this).attr("class") == "good"){
+                $(this).attr("class","good2");
+            }else{
+                $(this).attr("class","good");
+            }
+        }
+        
+    })
+    
+
     $("#pl").click(function(){
 
         $("#text").trigger("focus");

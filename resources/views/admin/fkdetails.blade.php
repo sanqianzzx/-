@@ -59,23 +59,23 @@
                         <input type="text" name="name" disabled value="{{ $res[0]->user }}" placeholder=""  class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">联系方式</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="name" disabled value="{{ $res[0]->user }}" placeholder=""  class="layui-input">
-                    </div>
-                </div>
+                
                 <div class="layui-form-item">
                     <label class="layui-form-label">反馈详情</label>
                     <div class="layui-input-block">
                         <textarea placeholder="" disabled class="layui-textarea">{{ $res[0]->content }}</textarea>
                     </div>
                 </div>
-
+                <div class="layui-form-item">
+                    <label class="layui-form-label">回复</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="" class="layui-textarea" id="review" name="review"></textarea>
+                    </div>
+                </div>
                 
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="submit">已阅读</button>
+                        <button class="layui-btn" lay-submit lay-filter="submit">回复</button>
 
                     </div>
                 </div>
@@ -88,3 +88,19 @@
 <script src="/static/admin/js/script.js"></script>
 </body>
 </html>
+
+<script>
+    var review;
+    $("form").submit(function(){
+
+        review = $("#review").val();
+
+        if(!review){
+            alert("请输入回复内容");
+            return false;
+        }
+        
+
+    })
+
+</script>

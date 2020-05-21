@@ -13,12 +13,15 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
+use App\Http\Middleware\Root;
 
 Route::get('/', "IndexController@home");
 
 Route::get('/gg', "IndexController@gg");
 
 Route::get('/article/{id}',"IndexController@article");
+
+Route::post('/good',"IndexController@good");
 
 Route::get("/fankui","IndexController@fankui");
 Route::post('/fkdo',"IndexController@fkdo");
@@ -27,11 +30,29 @@ Route::get('/login',"IndexController@login");
 Route::post('/logindo',"IndexController@logindo");
 Route::get('/reg',"IndexController@reg");
 Route::post('/regdo',"IndexController@regdo");
+Route::get('/rnumber',"IndexController@rnumber")->name('rnumber');
 Route::post('/yz',"IndexController@yz");
 Route::get('/uset',"IndexController@uset");
 Route::post('/session',"IndexController@session");
 Route::post('/aid',"IndexController@aid");
 Route::post('/reviewadd',"IndexController@reviewadd");
+
+
+//个人主页
+Route::group(['middleware' => ['my']],function(){
+    Route::get('/myindex',"MyController@index");
+    Route::get('/myhistory',"MyController@history");
+    Route::get('/mymessage',"MyController@message");
+    Route::get('/mygood',"MyController@good");
+    Route::get('/mydetails/{id}',"MyController@mydetails");
+    
+    Route::post('/remove_h',"MyController@remove_h");
+    Route::post('/remove_m',"MyController@remove_m");
+
+    //邮件发送
+    Route::any('/mail/send','MailController@send');
+
+});
 
 
 //后台

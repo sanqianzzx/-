@@ -16,14 +16,13 @@
     <link href="/css/style.min.css" rel="stylesheet">
     <style>
         #bg{
-
-        background: url('/img/bg.png') no-repeat;
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        position: fixed;
-        overflow: hidden;
-        z-index: -1;
+            background: url('/img/bg.png') no-repeat;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            position: fixed;
+            overflow: hidden;
+            z-index: -1;
         }
         #uerror{
             height: 20px;
@@ -31,6 +30,11 @@
             color: red;
         }
         #perror{
+            height:20px;
+            line-height: 20px;
+            color: red;
+        }
+        #rerror{
             height:20px;
             line-height: 20px;
             color: red;
@@ -68,6 +72,13 @@
                     <input type="password" id="pwd" name="pwd" class="form-control" placeholder="以字母开头，6-18字符" autocomplete="off">
                 </div>
                 <div id="perror"></div>
+                <div class="form-group">
+                    <label>验证码:</label>
+                    <input  type="text" id="rnumber" name="rnumber" class="form-control" width="80%" autocomplete="off">
+                    <div id="rerror"></div>
+                    <img src="{{ route('rnumber') }}" width="15%" style="margin-top:10px;margin-left:1%;">
+                    
+                </div>
             </div>
             <div class="modal-footer">
                 <div class="form-group">
@@ -83,6 +94,7 @@
         </form>
         </div>
     </main>
+
     <!--Main layout-->
 
     <!--Footer-->
@@ -110,10 +122,16 @@
 <script>
     var i1 = false;
     var i2 = false;
+    var i3 = false;
     var user = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;
     var pwd = /^[a-zA-Z]\w{5,17}$/;
+    var ruser;
+    var rpwd;
+    var rnumber;
+
     $("#user").blur(function(){
         var v = $(this).val();
+        ruser = v;
         var jg
         $.ajaxSettings.async = false;
         $.post("/yz",{'_token':'{{csrf_token()}}','name':v},function(data){
@@ -138,7 +156,7 @@
 
     $("#pwd").blur(function(){
         var p = $(this).val();
-        
+        rpwd = p;
         if(p == ""){
             $("#perror").html("密码不能为空");
             i2 = false;
@@ -150,11 +168,32 @@
             i2 = true;
         }
     })
+    $("#rnumber").blur(function(){
+        var n = $(this).val();
+        rnumber = n;
+        if(n == ""){
+            $("#rerror").html("验证码不能为空");
+            i3 = false;
+        }else{
+            $("#rerror").html("");  
+            i3 = true;
+        }
+    })
 
     $("form").submit(function(){
         $("#user").trigger("blur");
         $("#pwd").trigger("blur");
-        if(!i1 || !i2){
+        $("#rnumber").trigger("blur");
+        if(!i1 || !i2 || !i3){
+            return false;
+        }else{
+            $.post("/regdo",{'user':ruser,'pwd':rpwd,'rnumber':rnumber,'_token':'{{csrf_token()}}'},function (data) {
+                if(data == "注册失败" || data == "验证码错误"){
+                    alert(data);
+                }else{
+                    location.href = "/";
+                }        
+            });
             return false;
         }
     })

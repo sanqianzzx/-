@@ -35,6 +35,11 @@
             line-height: 20px;
             color: red;
         }
+        #rerror{
+            height:20px;
+            line-height: 20px;
+            color: red;
+        }
     </style>
 </head>
 
@@ -68,6 +73,12 @@
                     <input type="password" id="pwd" name="pwd" class="form-control" placeholder="密码" autocomplete="off">
                 </div>
                 <div id="perror"></div>
+                <div class="form-group">
+                    <input type="text" id="rnumber" name="rnumber" class="form-control"placeholder="验证码" autocomplete="off">
+                    <div id="rerror" ></div>
+                    <img src="{{ route('rnumber') }}" width="15%" style="margin-top:10px;margin-left:1%;">
+                </div>
+                
             </div>
             <div class="modal-footer">
                 <div class="form-group">
@@ -110,8 +121,13 @@
 <script>
     var i1 = false;
     var i2 = false;
+    var i3 = false;
+    var user;
+    var pwd;
+    var rnumber;
     $("#user").blur(function(){
         var v = $(this).val();
+        user = v;
         if(v == ""){
             $("#uerror").html("请填写用户名");
             i1 = false;
@@ -122,6 +138,7 @@
     })
     $("#pwd").blur(function(){
         var p = $(this).val();
+        pwd = p;
         if(p == ""){
             $("#perror").html("请填写密码");
             i2 = false;
@@ -130,10 +147,31 @@
             i2 = true;
         }
     })
+    $("#rnumber").blur(function(){
+        var n = $(this).val();
+        rnumber = n;
+        if(n == ""){
+            $("#rerror").html("请填写验证码");
+            i3 = false;
+        }else{
+            $("#rerror").html("");  
+            i3 = true;
+        }
+    })
     $("form").submit(function(){
         $("#user").trigger("blur");
         $("#pwd").trigger("blur");
-        if(!i1 || !i2){
+        $("#rnumber").trigger("blur");
+        if(!i1 || !i2 || !i3){
+            return false;
+        }else{
+            $.post("/logindo",{'user':user,'pwd':pwd,'rnumber':rnumber,'_token':'{{csrf_token()}}'},function (data) {
+                if(data == "用户名或密码错误" || data == "验证码错误"){
+                    alert(data);
+                }else{
+                    location.href = "/";
+                }        
+            });
             return false;
         }
     })

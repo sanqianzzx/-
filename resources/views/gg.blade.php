@@ -91,7 +91,7 @@
                     @else
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
-                        <a class="nav-link waves-effect" href="#" >{{ session()->get('username') }}</a>
+                        <a class="nav-link waves-effect" href="/myindex" >{{ session()->get('username') }}</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link waves-effect" href="/uset" >登出</a>

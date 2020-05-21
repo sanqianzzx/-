@@ -100,7 +100,7 @@
                     @else
                     <ul class="navbar-nav nav-flex-icons">
                         <li class="nav-item">
-                        <a class="nav-link waves-effect" href="#" >{{ session()->get('username') }}</a>
+                        <a class="nav-link waves-effect" href="/myindex" >{{ session()->get('username') }}</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link waves-effect" href="/uset" >登出</a>
@@ -130,7 +130,7 @@
             <div><h1 style="color:#2196f3">反馈:</h1></div>
             <form action="/fkdo" method="post" >
             {{ csrf_field() }}
-            <input name="email" id="email" placeholder="请留下您的联系方式,如邮箱" style="width:100%;">
+            
             <div style="width:100%;height:400px;margin-top:20px">
                 
                 <textarea id="text" style="width:100%;height:300px" name="text" placeholder="请给我们留下您宝贵的意见吧..."></textarea>
@@ -167,7 +167,7 @@
 <script>
     var a;
     var flag = false;
-    var flag2 = false;
+    // var flag2 = false;
     $.ajaxSettings.async = false;
     $.post("/session",{'_token':'{{csrf_token()}}'},function(data){
         a = data;
@@ -189,18 +189,18 @@
             flag = true;
         }
     })
-    $("#email").blur(function(){
-        if($(this).val() == ""){
-            $(this).attr("placeholder","请留下您的联系方式");
-            flag2 = false;
-        }else{
-            flag2 = true;
-        }
-    })
+    // $("#email").blur(function(){
+    //     if($(this).val() == ""){
+    //         $(this).attr("placeholder","请留下您的联系方式");
+    //         flag2 = false;
+    //     }else{
+    //         flag2 = true;
+    //     }
+    // })
     $("form").submit(function(){
         $("#text").trigger("focus");
         $("#text").trigger("blur");
-        if(!flag || !flag2){
+        if(!flag){
             return false;
         }
         

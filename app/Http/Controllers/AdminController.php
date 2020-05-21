@@ -259,8 +259,11 @@ class AdminController extends Controller
 
     public function a_fkdo(){
 
+        $review = $_POST['review'];
+        $time = time();
         $id = session()->get('fkid');
-        $res = DB::table("fankui")->where('id',$id)->update(['read'=>1]);
+
+        $res = DB::table("fankui")->where('id',$id)->update(['read'=>1,'time'=>$time,'review'=>$review]);
         session()->forget('fkid');
         if($res){
             echo "<script>location.href='userfk';</script>";

@@ -16,11 +16,11 @@ class IndexController extends Controller
         
         if(isset($_GET['id']) && $_GET['id'] != 0){
 
-            $text = DB::select("select * from article where type = {$_GET['id']}");
+            $text = DB::select("select * from article where type = {$_GET['id']} order by id desc");
             $newtype = $_GET['id'];
         }else{
 
-            $text = DB::select("select * from article");
+            $text = DB::select("select * from article order by id desc");
         }
         
         $type = DB::select("select * from type");
@@ -55,38 +55,60 @@ class IndexController extends Controller
         }
 
         // var_dump($text);die;
+        
         return view('index',["type" => $type,"text" => $text,"newtype" => $newtype]);
     }
 
 
     public function gg(){
 
+        //公告
         $res = DB::select("select * from gg");
         return view("gg",['res'=>$res]);
     }
 
     public function article($id){
         session(['article' => $id]);
+        //是否登录
+        $good = 0;
+        $username = session()->get("username");
+        if($username){
+            $good = DB::select("select * from good where guser = '{$username}' and garticle = $id");
+            if($good){
+                $good = 1;
+            }
+
+            $h = DB::select("select * from history where hname = '$username' and harticle = $id");
+            if(!$h){
+                DB::table("history")->insert(["hname"=>$username,"harticle"=>$id]);
+            }
+            
+        }
+        
+
         if(!is_numeric($id)){
             echo "<script>location.href='/'</script>";
         }
+        //文章内容
         $res = DB::select("select * from article,type where article.type = type.id and article.id=$id");  
         
         $look = $res[0]->look + 1;
         DB::table("article")->where("id",$id)->update(["look"=>$look]);
 
         $res[0]->time = date("Y-m-d H:i:s",$res[0]->time);
-        $type = $res[0]->type;
-        // dd($res);
-        $other = DB::select("select id,aname,pic from article where type = $type limit 5");
-        $other2 = DB::select("select id,aname,pic from article order by time DESC limit 5");
         $review = DB::select("select * from review where cid = $id");
         foreach($review as $k=>$v){
-            $v->uid = DB::select("select uname from user where id = $v->uid")[0]->uname;
+            $user = DB::select("select * from user where id = $v->uid");
+            if($user){
+                $v->uid = DB::select("select uname from user where id = $v->uid")[0]->uname;
+            }else{
+                $v->uid = "该用户已注销";
+            }
+            
         }
-        // dd($review);
+        //热门推荐
         $top = DB::select("select * from article order by look DESC limit 4");
-        return view('article',["res"=>$res,"other"=>$other,"other2"=>$other2,'review'=>$review,'top'=>$top]);
+        return view('article',['res'=>$res,'review'=>$review,'top'=>$top,'good'=>$good]);
     }
 
     public function fankui(){
@@ -97,7 +119,7 @@ class IndexController extends Controller
         // var_dump($_POST);
         $user = session()->get("username");
         $time = time();
-        $res = DB::table("fankui")->insert(['user'=>$user,'email'=>$_POST['email'],'content'=>$_POST['text'],'time'=>$time]);
+        $res = DB::table("fankui")->insert(['user'=>$user,'content'=>$_POST['text'],'time'=>$time]);
         if($res){
             echo "<script>alert('多谢您宝贵的建议,我们会尽快阅读并回复您');location.href='/';</script>";
         }else{
@@ -110,40 +132,57 @@ class IndexController extends Controller
         return view('login');
     }
     public function logindo(){
-        var_dump($_POST);
-        $res = DB::select("select * from user where uname = '{$_POST['user']}'");
-        if($res){
-            if($res[0]->password == $_POST['pwd']){
+        $rnumber = session('reg_num_check');
+        if($rnumber != $_POST['rnumber']){
+            echo "验证码错误";
+        }else{
+            $res = DB::select("select * from user where uname = '{$_POST['user']}'");
+            $_POST['pwd'] = md5($_POST['pwd']);
+            if($res && $res[0]->password == $_POST['pwd']){    
                 if(session('username')){
                     session()->forget('username');
-                }
-                session(['username' => $_POST['user']]);
-                return redirect("/");
+                    session(['username' => $_POST['user']]);
+                    return redirect("/");
+                }else{
+                    session(['username' => $_POST['user']]);
+                    return redirect("/");
+                }       
             }else{
-                echo "<script>alert('用户名或密码错误');location.href='/';</script>";
+                echo "用户名或密码错误";
             }
-        }else{
-            echo "<script>alert('用户名或密码错误');location.href='/';</script>";
         }
+        
         
     }
 
     public function reg(){
+        
         return view('reg');
     }
     public function regdo(){
-        
+        $rnumber = session('reg_num_check');
         $pic = "/img/tx.jpg";
+        $_POST['pwd'] = md5($_POST['pwd']);
         $res = DB::table("user")->insert(['uname'=>$_POST['user'],'password'=>$_POST['pwd'],'upic'=>$pic]);
-        if($res){
-            if(session('username')){
-                session()->forget('username');
-            }
-            session(['username' => $_POST['user']]);
-            return redirect("/");
+        if($rnumber != $_POST['rnumber']){
+            echo "验证码错误";
         }else{
-            echo "<script>alert('注册失败');location.href='/';</script>";
+            if($res){
+                if(session('username')){
+                    session()->forget('username');
+                }
+                session(['username' => $_POST['user']]);
+                
+            }else{
+                echo "注册失败";
+            }
         }
+        
+        
+    }
+
+    public function rnumber(){
+        return view("rnumber");
     }
 
     public function yz(){
@@ -173,6 +212,18 @@ class IndexController extends Controller
         $res = DB::table('review')->insert(['uid'=>$uid,'rcontent'=>$rcontent,'cid'=>$cid,'time'=>$time]);
     }
     
+    public function good(){
+
+        $user = session()->get("username");
+        $article = session()->get("article");
+        $res = DB::select("select id from good where guser = '{$user}' and garticle = '{$article}'");
+        if($res){
+            
+            DB::table("good")->where('id',$res[0]->id)->delete();
+        }else{
+            DB::table("good")->insert(['guser' => "$user",'garticle' => $article]);
+        }
+    }
 
     public function uset(){
         if(session('username')){
