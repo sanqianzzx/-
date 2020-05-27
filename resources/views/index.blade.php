@@ -212,7 +212,7 @@
 
         <!--Copyright-->
         <div class="footer-copyright py-3">
-            © 2020 sq.com 
+            © 2020 www.shiqian.live 
         </div>
         <!--/.Copyright-->
 
@@ -231,7 +231,7 @@
     <!-- Initializations -->
     <script type="text/javascript">
         // Animations initialization
-        new WOW().init();
+        // new WOW().init();
     </script>
 </body>
 

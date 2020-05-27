@@ -13,6 +13,7 @@
     <link href="/css/mdb.min.css" rel="stylesheet">
     <!-- Your custom styles (optional) -->
     <link href="/css/style.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/common/ueditor/ueditor.parse.js"></script>
     <style>
         #app{
             margin-top: 50px;
@@ -443,5 +444,5 @@
         }
         
     })
-    
+
 </script>

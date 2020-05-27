@@ -20,10 +20,10 @@ class IndexController extends Controller
             $newtype = $_GET['id'];
         }else{
 
-            $text = DB::select("select * from article order by id desc");
+            $text = DB::select("select * from article,type where type.status = 1 and article.type = type.id order by article.id desc");
         }
         
-        $type = DB::select("select * from type");
+        $type = DB::select("select * from type where status = 1");
         
         function cutstr_html($string,$sublength,$encoding = 'utf-8',$ellipsis = '…'){
             $string = strip_tags($string);

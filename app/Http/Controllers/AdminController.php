@@ -153,7 +153,6 @@ class AdminController extends Controller
     public function articleindex(){
 
         $res = DB::select("select article.id,aname,tname,time,look,pic from article,type where article.type = type.id");
-        // dd($res);
         return view("admin/article_index",['res'=>$res]);
     }
 
@@ -164,8 +163,6 @@ class AdminController extends Controller
     }
 
     public function articleadddo(){
-
-        // dd($_POST);
         if(isset($_POST['body'])){
             if(!$_POST['title'] || !$_POST['picurl'] || !$_POST['body']){
                 echo "<script>alert('添加失败,请重新确认选项,确保所有选项都有内容');location.href='articleadd';</script>";
@@ -201,7 +198,7 @@ class AdminController extends Controller
 
     public function articleupdate($id){
         $arr = DB::select("select * from article where id = $id");
-        // var_dump($arr);die;
+        
         $type = DB::select("select * from type");
         session(['id' => $arr[0]->id]);
         

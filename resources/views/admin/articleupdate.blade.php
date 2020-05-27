@@ -110,7 +110,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">内容</label>
                     <div class="layui-input-block" style="width:1110px;">
-                        <script id="container" name="body" style="height: 500px" type="text/plain"></script>
+                        <script id="container" name="body" style="height: 500px" type="text/plain">{!! $arr[0]->content !!}</script>
                         </div>
                         </div>
 
@@ -179,6 +179,7 @@
                                     layer.msg("上传异常");
                                 }
                             });
+                           
 
                             // form.on('submit(submit)', function (data) {
                             //     layer.load({ time: 0 });
@@ -199,3 +200,4 @@
                         <script src="/static/admin/js/script.js"></script>
 </body>
 </html>
+

@@ -9,9 +9,16 @@ class MyController extends Controller
 {
     //
     public function index(){
-
+        $user = session()->get("username");
+        $email = DB::select("select email from user where uname = '{$user}'");
         
-        return view("/myself/index");
+        if(empty($email[0])){
+            $email = 0;
+        }else{
+            $email = $email[0]->email;
+        }
+
+        return view("/myself/index",["email"=>$email]);
     }
 
     public function good(){

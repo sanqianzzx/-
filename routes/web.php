@@ -51,6 +51,8 @@ Route::group(['middleware' => ['my']],function(){
 
     //邮件发送
     Route::any('/mail/send','MailController@send');
+    Route::post('/mail/do','MailController@do');
+    Route::post('/mail/pwd','MailController@pwd');
 
 });
 

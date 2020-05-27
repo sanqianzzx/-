@@ -55,7 +55,24 @@
         }
         .r_content{
             width: 90%;
-            margin: 0 auto;
+            margin-left: 4%;
+        }
+        
+        #email{
+            width: 70%;
+            
+        }
+        .form-control{
+            display: inline;
+        }
+        .active{
+            display: block;
+        }
+        #pwd{
+            width: 70%;
+        }
+        #npwd{
+            width: 70%;
         }
     </style>
 </head>
@@ -143,20 +160,45 @@
                 </ul>
             </div>
             <div id="right">
+
+                @if( !$email )
                 <div class="r_head"><h2>如果您想要更改密码需要先绑定邮箱</h2></div>
                 <div class="r_content">
-                    <form method="" action="">
+                    <form method="post" action="/mail/do" id="sendE">
+                        {{ csrf_field() }}
                         <div class="form-group">
                             <label for="exampleInputEmail1">邮箱地址 :</label>
                             <input type="email" class="form-control" name="email" id="email" placeholder="邮箱地址">
+                            <button class="btn btn-default" id="sendEmail">发送验证码</button>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">邮箱验证码 :</label>
-                            <input type="password" class="form-control" name="pwd" id="pwd" placeholder="邮箱验证码">                
+                            <input type="text" class="form-control" name="pwd" id="pwd" placeholder="邮箱验证码">                
                         </div>
                         <button class="btn btn-default">进行绑定</button>
                     </form>
                 </div>
+                @else
+                <div class="r_content">
+                    <form method="post" action="/mail/pwd" id="sendE">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">您的邮箱地址为 :</label>
+                            <input type="email" class="form-control" name="email" id="email" value="{{ $email }}" disabled>
+                            <button class="btn btn-default" id="sendEmail">发送验证码</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">邮箱验证码 :</label>
+                            <input type="text" class="form-control" name="pwd" id="pwd" placeholder="邮箱验证码">                
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">新密码 :</label>
+                            <input type="password" class="form-control" name="npwd" id="npwd" placeholder="以字母开头，6-18字符">                
+                        </div>
+                        <button class="btn btn-default">进行绑定</button>
+                    </form>
+                </div>
+                @endif
             </div>
 
           
@@ -200,6 +242,12 @@
 </html>
 
 <script>
+    var flag = false;
+    var time = 60;
+    var email;
+    var code;
+    var pwd = /^[a-zA-Z]\w{5,17}$/;
+    var rpwd;
 
     $(".left_li").mouseover(function(){
       
@@ -221,4 +269,56 @@
         $(this).css({"background": "white"});
         $(this).removeAttr("style");
     })
+
+    $("#sendEmail").click(function(){
+        time = 60;
+        var a= $(this);
+        
+        email = $("#email").val()
+        if( !flag && email){
+            $.ajaxSettings.async = false;
+            $.get("/mail/send",{'email':email},function(data){
+                code = data;
+            })
+            $.ajaxSettings.async = true;
+            flag = true;
+            a.text(time);
+            $(this).attr("disabled", true); 
+            var t = setInterval(function(){
+                time--;
+                a.text(time);
+                if(time <= 0){
+                    clearInterval(t);
+                    a.attr("disabled", false); 
+                    a.text("发送验证码");
+                    flag = false;
+                }
+            },1000)
+            
+        }else{
+            alert("请输入邮箱");
+        }
+
+        return false;
+    })
+
+    $("#sendE").submit(function(){
+        var p = $("#npwd").val();
+        rpwd = p;
+
+        if( code != $("#pwd").val() ){
+            alert("邮箱验证码错误");
+            return false;
+        }else if(p == ""){
+            alert("密码不能为空");
+            return false;
+        }else if(!p.match(pwd)){
+            alert("密码不符合规则");
+            return false;
+        }
+
+
+    })
+
+    
 </script>
